@@ -7,8 +7,8 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIps = ['::1','200.109.60.255'];
-        var requestIP = req.header('x-forwarded-for');
+        var trustedIps = ['::2','200.109.60.255'];
+        var requestIP = req.ip;
         var requestIP2 = req.connection.remoteAddress; 
        /* console.log(req.ip);
         console.log(req.connection.remoteAddress);*/

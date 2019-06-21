@@ -16,6 +16,8 @@ require('./routes')(app);
 
 const port = process.env.PORT || 3000;
 
+app.set('trust proxy', true);
+
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);
 })
