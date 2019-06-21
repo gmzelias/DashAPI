@@ -1,5 +1,4 @@
 const express = require('express');
-const expressip = require('express-ip');
 
 let app = express();
 
@@ -16,8 +15,6 @@ app.use(function (req, res, next) {
 require('./routes')(app);
 
 const port = process.env.PORT || 3000;
-
-app.use(expressip().getIpInfoMiddleware);
 
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);
