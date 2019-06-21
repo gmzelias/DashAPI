@@ -9,6 +9,7 @@ module.exports = {
     dashUsdBss: (req, res) => {
         var trustedIps = ['::1','200.109.60.255'];
         var requestIP = req.ip;
+        var requestIP2 = req.connection.remoteAddress; 
        /* console.log(req.ip);
         console.log(req.connection.remoteAddress);*/
         if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
@@ -285,7 +286,7 @@ module.exports = {
                 })
                 }
       }else {
-        return utils.errorHandler(res, 500)({status: "IP out of range", ip: requestIP});
+        return utils.errorHandler(res, 500)({status: "IP out of range", ip: requestIP,ip2:requestIP2});
       }
 }
 };
