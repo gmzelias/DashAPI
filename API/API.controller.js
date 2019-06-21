@@ -7,11 +7,11 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIps = ['::2','200.109.60.255'];
+        var trustedIps = ['::1','200.109.60.255'];
         var requestIP = req.headers['x-real-ip'] || req.connection.remoteAddress;
        /* console.log(req.ip);
         console.log(req.connection.remoteAddress);*/
-        if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
+      //  if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
             console.log('IP Allowed');
             
             const requestCMC = {
@@ -284,9 +284,9 @@ module.exports = {
                 });
                 })
                 }
-      }else {
+    /*  }else {
         return utils.errorHandler(res, 500)({status: "IP out of range"});
-      }
+      }*/
 }
 };
 
