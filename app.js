@@ -14,13 +14,8 @@ app.use(function (req, res, next) {
 // Import routes
 require('./routes')(app);
 
+const port = process.env.PORT || 3000;
 
-/*let router = require('./API/index');
-
-app.use(router);
-
-*/
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
-
+app.listen(port, function () {
+  console.log(`App listening on port ${port}!`);
+})

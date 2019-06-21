@@ -12,7 +12,7 @@ module.exports = {
        /* console.log(req.ip);
         console.log(req.connection.remoteAddress);*/
         if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
-            console.log('Allowed');
+            console.log('IP Allowed');
             
             const requestCMC = {
               method: 'GET',
@@ -71,92 +71,44 @@ module.exports = {
 
             let arrayVesPrices = [];
             const arrAvg = arrayVesPrices => arrayVesPrices.reduce((a,b) => a + b, 0) / arrayVesPrices.length;
+            let vesDashRate;
 
             rp(requestCMC).then((responseCMC) => {
-                let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
-                console.log('From CoinMarketCap',usdRateCMC);
+              let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
+              console.log('From CoinMarketCap',usdRateCMC);
+              vesAvgPromise(arrayVesPrices).then((response)=>{
+              vesDashRate = (response * usdRateCMC).toFixed(2);
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
+              }).catch((error)=>{
+              return utils.errorHandler(res, 500)({error});
+              });
 
-                vesAvgPromise(arrayVesPrices).then((response)=>{
-                  return utils.respondWithResults(res, 200)(response);
-                }).catch((error)=>{
-                  return utils.errorHandler(error); 
-                });
-                /*
-                  //Request DolarToday
-                return dolarTodayPromise(arrayVesPrices).then((response)=>{
-                    //Request Yadio
-                  return yadioPromise(arrayVesPrices).then((response)=>{
-                      //Request Basic Change
-                    return basicChangePromise(arrayVesPrices).then((response)=>{
-                        //Request Bitcoin Venezuela
-                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
-                         console.log(response);
-                         let vesAvg = arrAvg(arrayVesPrices)
-                         return utils.respondWithResults(res, 200)(vesAvg);
-                      });
-                    });
-                  });
-                }).catch((error)=>{
-                  console.log(error);
-                      //Request Yadio
-                  return yadioPromise(arrayVesPrices).then((response)=>{
-                      //Request Basic Change
-                    return basicChangePromise(arrayVesPrices).then((response)=>{
-                        //Request Bitcoin Venezuela
-                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
-                         console.log(response);
-                         let vesAvg = arrAvg(arrayVesPrices)
-                         return utils.respondWithResults(res, 200)(vesAvg);
-                      });
-                    });
-                  }).catch((error)=>{
-                    console.log(error);
-                          //Request Basic Change
-                    return basicChangePromise(arrayVesPrices).then((response)=>{
-                        //Request Bitcoin Venezuela
-                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
-                         console.log(response);
-                         let vesAvg = arrAvg(arrayVesPrices)
-                         return utils.respondWithResults(res, 200)(vesAvg);
-                      });
-                    }).catch((error)=>{
-                      console.log(error);
-                        //Request Bitcoin Venezuela
-                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
-                         console.log(response);
-                         let vesAvg = arrAvg(arrayVesPrices)
-                         return utils.respondWithResults(res, 200)(vesAvg);
-                      }).catch(()=>{
-                        return utils.errorHandler('No VES data'); 
-                      })
-                    })
-                  })
-                });*/
-
-                    // dash by (*) VES  
-
-          }).catch((err) => { // Error on CoinMarketCap
-              console.log('API call error in CoinMarketCap:', err);
+              }).catch((err) => { // Error on CoinMarketCap
+              console.log('API call error in CoinMarketCap');
               return rp(requestCoinCap).then((responseCoinCap)=>{
               var usdRateCoinCap = Number(responseCoinCap['data']['priceUsd']).toFixed(3);
               console.log('From CoinCap',usdRateCoinCap);
               vesAvgPromise(arrayVesPrices).then((response)=>{
-                return utils.respondWithResults(res, 200)(response);
+              vesDashRate = (response * usdRateCoinCap).toFixed(2);
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
               }).catch((error)=>{
-                return utils.errorHandler(error); 
-              });     
+                return utils.errorHandler(res, 500)({error});
+              }); 
+
             }).catch((err) => { // Error on CoinCap
-              console.log('API call error in CoinCap:', err);
+              console.log('API call error in CoinCap');
               return rp(requestCoinGecko).then((responseCoinGecko)=>{
               var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
               console.log('From Coin Gecko',usdRateCoinGecko);
               vesAvgPromise(arrayVesPrices).then((response)=>{
-                return utils.respondWithResults(res, 200)(response);
+              vesDashRate = (response * usdRateCoinGecko).toFixed(2);
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
               }).catch((error)=>{
-                return utils.errorHandler(error); 
+                return utils.errorHandler(res, 500)({error});
               });
             }).catch((err) => { // Error on CoinGecko (All 3 returned error)
-              return utils.errorHandler('Cant find Dash USD rate'); 
+              console.log('API call error in CoinGecko');
+              return utils.errorHandler(res, 500)({status: "No USD rate found"});
             })
           });            
         });
@@ -199,6 +151,7 @@ module.exports = {
                 rp(requestBitVzla).then((responseBitVzla)=>{         
                   let vesBitVzla = parseFloat(responseBitVzla['exchange_rates']['VEF_USD']);
                   if (Math.ceil(Math.log10(vesBitVzla + 1)) >= 9 ) vesBitVzla = parseFloat((vesBitVzla / 100000).toFixed(3)); // Validation if still in VEF
+                  else vesBitVzla = parseFloat(vesBitVzla.toFixed(3));
                   array.push(vesBitVzla);
                   resolve(array);
                   }).catch(()=>{
@@ -219,10 +172,57 @@ module.exports = {
                          console.log(response);
                          let vesAvg = arrAvg(arrayVesPrices)
                          resolve (vesAvg);
-                      });
-                    });
-                  });
-                }).catch((error)=>{
+                      }).catch((error)=>{
+                        console.log(response);
+                        console.log(error);
+                        let vesAvg = arrAvg(arrayVesPrices)
+                        resolve (vesAvg);
+                      })
+                    }).catch((error)=>{
+                      console.log(error);
+                      //Request Bitcoin Venezuela
+                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
+                         console.log(response);
+                         let vesAvg = arrAvg(arrayVesPrices)
+                         resolve (vesAvg);
+                      }).catch((error)=>{
+                        console.log(response);
+                        console.log(error);
+                        let vesAvg = arrAvg(arrayVesPrices)
+                        resolve (vesAvg);
+                      })
+                    })
+                  }).catch((error)=>{ //Yadio Error
+                    console.log(error);
+                    //Request Basic Change
+                    return basicChangePromise(arrayVesPrices).then((response)=>{
+                      //Request Bitcoin Venezuela
+                    return bitVzlaPromise(arrayVesPrices).then((response)=>{
+                       console.log(response);
+                       let vesAvg = arrAvg(arrayVesPrices)
+                       resolve (vesAvg);
+                    }).catch((error)=>{
+                      console.log(error);
+                      console.log(response);       
+                      let vesAvg = arrAvg(arrayVesPrices)
+                      resolve (vesAvg);
+                    })
+                  }).catch((error)=>{ //Basic Change Error
+                    console.log(error);
+                      //Request Bitcoin Venezuela
+                    return bitVzlaPromise(arrayVesPrices).then((response)=>{
+                       console.log(response);
+                       let vesAvg = arrAvg(arrayVesPrices)
+                       resolve (vesAvg);
+                    }).catch((error)=>{
+                      console.log(response);
+                      console.log(error);
+                      let vesAvg = arrAvg(arrayVesPrices)
+                      resolve (vesAvg);
+                    })
+                  })
+                  })
+                }).catch((error)=>{ //DT Error
                   console.log(error);
                       //Request Yadio
                   return yadioPromise(arrayVesPrices).then((response)=>{
@@ -233,8 +233,26 @@ module.exports = {
                          console.log(response);
                          let vesAvg = arrAvg(arrayVesPrices)
                          resolve (vesAvg);
-                      });
-                    });
+                      }).catch((error)=>{
+                        console.log(error);
+                        console.log(response);
+                        let vesAvg = arrAvg(arrayVesPrices)
+                        resolve (vesAvg);
+                      })
+                    }).catch((error)=>{
+                      console.log(error);
+                        //Request Bitcoin Venezuela
+                      return bitVzlaPromise(arrayVesPrices).then((response)=>{
+                         console.log(response);
+                         let vesAvg = arrAvg(arrayVesPrices)
+                         resolve (vesAvg);
+                      }).catch((error)=>{
+                        console.log(error);
+                        console.log(response);
+                        let vesAvg = arrAvg(arrayVesPrices)
+                        resolve (vesAvg);
+                      })
+                    })
                   }).catch((error)=>{
                     console.log(error);
                           //Request Basic Change
@@ -244,7 +262,12 @@ module.exports = {
                          console.log(response);
                          let vesAvg = arrAvg(arrayVesPrices)
                          resolve (vesAvg);
-                      });
+                      }).catch((error)=>{
+                        console.log(error);
+                        console.log(response);                    
+                        let vesAvg = arrAvg(arrayVesPrices)
+                        resolve (vesAvg);
+                      })
                     }).catch((error)=>{
                       console.log(error);
                         //Request Bitcoin Venezuela
@@ -252,17 +275,17 @@ module.exports = {
                          console.log(response);
                          let vesAvg = arrAvg(arrayVesPrices)
                          resolve (vesAvg);
-                      }).catch(()=>{
-                        reject ('No VES data'); 
+                      }).catch((error)=>{
+                        console.log(error);
+                        reject('No VES data'); 
                       })
                     })
                   })
                 });
                 })
                 }
-
       }else {
-          return utils.errorHandler('Cant find Dash USD rate'); 
+        return utils.errorHandler(res, 500)({status: "IP out of range"});
       }
 }
 };
