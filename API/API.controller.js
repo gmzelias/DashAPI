@@ -7,10 +7,10 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIps = ['::1'];
+        var trustedIps = ['::1','200.109.60.255'];
         var requestIP = req.ip;
-        console.log(req.ip);
-        console.log(req.connection.remoteAddress);
+       /* console.log(req.ip);
+        console.log(req.connection.remoteAddress);*/
         if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
             console.log('IP Allowed');
             
