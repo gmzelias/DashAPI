@@ -285,7 +285,7 @@ module.exports = {
                 })
                 }
       }else {
-        return utils.errorHandler(res, 500)({status: "IP out of range"});
+        return utils.errorHandler(res, 500)({status: "IP out of range", ip: requestIP});
       }
 }
 };
