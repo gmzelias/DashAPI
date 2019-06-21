@@ -9,8 +9,8 @@ module.exports = {
     dashUsdBss: (req, res) => {
         var trustedIps = ['::1'];
         var requestIP = req.ip;
-       /* console.log(req.ip);
-        console.log(req.connection.remoteAddress);*/
+        console.log(req.ip);
+        console.log(req.connection.remoteAddress);
         if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
             console.log('IP Allowed');
             
