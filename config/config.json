@@ -7,6 +7,6 @@
     },
 
     "production":{
-        "PORT":30001           
+        "PORT":3001           
     }
 }
