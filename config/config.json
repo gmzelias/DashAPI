@@ -1,12 +1,12 @@
 {
     "test":{
-        "PORT":3001
+        "PORT":6001
     },
     "development":{
-        "PORT":3001            
+        "PORT":6001            
     },
 
     "production":{
-        "PORT":3001           
+        "PORT":6001           
     }
 }
