@@ -1,3 +1,4 @@
+require('./config/config');
 const express = require('express');
 
 let app = express();
@@ -14,7 +15,7 @@ app.use(function (req, res, next) {
 // Import routes
 require('./routes')(app);
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);
