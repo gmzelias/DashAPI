@@ -9,6 +9,7 @@ module.exports = {
     dashUsdBss: (req, res) => {
         var trustedIps = ['::1','200.109.60.255'];
         var requestIP = req.headers['x-real-ip'] || req.connection.remoteAddress;
+        var reqheader = req.headers;
        /* console.log(req.ip);
         console.log(req.connection.remoteAddress);*/
       //  if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
@@ -78,7 +79,7 @@ module.exports = {
               console.log('From CoinMarketCap',usdRateCMC);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCMC).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
+              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
               }).catch((error)=>{
               return utils.errorHandler(res, 500)({error});
               });
@@ -90,7 +91,7 @@ module.exports = {
               console.log('From CoinCap',usdRateCoinCap);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinCap).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
+              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               }); 
@@ -102,7 +103,7 @@ module.exports = {
               console.log('From Coin Gecko',usdRateCoinGecko);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinGecko).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
+              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               });
