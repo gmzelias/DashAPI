@@ -36,7 +36,7 @@ module.exports = {
       key  : 'C:/Users/gmzel/Desktop/wordpress-DHV.pem',
       ref  : 'origin/master',
       repo : 'https://github.com/gmzelias/DashAPI.git',
-      path : '/home/bitnami/apps/DashAPI',
+      path : '/bitnami/apps/DashAPI',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
   }
