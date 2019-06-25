@@ -12,8 +12,7 @@ module.exports = {
         var requestIP = req.headers['x-forwarded-for'];
         var requestOrigin = req.headers['origin']; 
        if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0 ) {  //No request allow from unknown IPs
-            console.log('Allowed');
-            
+            console.log('Allowed');     
             const requestCMC = {
               method: 'GET',
               uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest',
@@ -78,7 +77,7 @@ module.exports = {
               console.log('From CoinMarketCap',usdRateCMC);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCMC).toFixed(2);
-              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
               }).catch((error)=>{
               return utils.errorHandler(res, 500)({error});
               });
@@ -90,7 +89,7 @@ module.exports = {
               console.log('From CoinCap',usdRateCoinCap);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinCap).toFixed(2);
-              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               }); 
@@ -102,7 +101,7 @@ module.exports = {
               console.log('From Coin Gecko',usdRateCoinGecko);
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinGecko).toFixed(2);
-              return utils.respondWithResults(res, 200)({header:reqheader,vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               });
