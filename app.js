@@ -15,7 +15,7 @@ app.use(function (req, res, next) {
 // Import routes
 require('./routes')(app);
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);

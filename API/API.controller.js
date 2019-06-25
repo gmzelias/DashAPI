@@ -284,6 +284,7 @@ module.exports = {
                 })
                 }
       }else {
+        console.log('Not Allowed');
         return utils.errorHandler(res, 500)({status: "IP out of range"});
       }
 }
