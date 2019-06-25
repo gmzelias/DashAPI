@@ -7,9 +7,10 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIpOrOrigin = ['::1','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io'];
+        var trustedIpOrOrigin = ['::1','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io','http://www.dashhelpme.io','http://dashhelpme.io'];
+        console.log(req.headers);
         var requestIP = req.headers['x-forwarded-for'];
-        var requestOrigin = req.headers['origin'];
+        var requestOrigin = req.headers['origin']; 
        if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0 ) {  //No request allow from unknown IPs
             console.log('Allowed');
             
