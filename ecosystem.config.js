@@ -32,7 +32,7 @@ module.exports = {
   deploy : {
     production : {
       user : 'bitname',
-      host : 'ec2-18-237-86-164.us-west-2.compute.amazonaws.com',
+      host : 'ec2-34-216-219-84.us-west-2.compute.amazonaws.com',
       key  : 'C:/Users/gmzel/Desktop/wordpress-DHV.pem',
       ref  : 'origin/master',
       repo : 'https://github.com/gmzelias/DashAPI.git',
