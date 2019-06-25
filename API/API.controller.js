@@ -7,13 +7,11 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIps = ['::1','200.109.60.255'];
-        var requestIP = req.headers['x-real-ip'] || req.connection.remoteAddress;
-        var reqheader = req.headers;
-       /* console.log(req.ip);
-        console.log(req.connection.remoteAddress);*/
-      //  if(trustedIps.indexOf(requestIP) >= 0) {  //No request allow from unknown IPs
-            console.log('IP Allowed');
+        var trustedIpOrOrigin = ['::1','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io'];
+        var requestIP = req.headers['x-forwarded-for'];
+        var requestOrigin = req.headers['origin'];
+       if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0 ) {  //No request allow from unknown IPs
+            console.log('Allowed');
             
             const requestCMC = {
               method: 'GET',
@@ -285,9 +283,9 @@ module.exports = {
                 });
                 })
                 }
-    /*  }else {
+      }else {
         return utils.errorHandler(res, 500)({status: "IP out of range"});
-      }*/
+      }
 }
 };
 
