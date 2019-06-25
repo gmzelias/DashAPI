@@ -31,7 +31,7 @@ module.exports = {
 
   deploy : {
     production : {
-      user : 'root',
+      user : 'bitnami',
       host : 'ec2-34-216-219-84.us-west-2.compute.amazonaws.com',
       key  : 'C:/Users/gmzel/Desktop/wordpress-DHV.pem',
       ref  : 'origin/master',
