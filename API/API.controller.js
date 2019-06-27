@@ -151,8 +151,8 @@ jQuery('.elementor-icon-box-title:eq(5)').text('#14')
           /* Round Volume or Capitalization to WP format*/
           const VolCapRound = (volcap) => {
             let capToWP
-            if (volcap.length === 10) capToWP = '+$'+volcap.toString().slice(0,1)+'.'+volcap.toString().slice(1,2) + 'B';
-            if (volcap.length === 9)  capToWP = '+$'+volcap.toString().slice(0,3)+ 'M';
+            if (volcap.length === 10) capToWP = volcap.toString().slice(0,1)+'.'+volcap.toString().slice(1,2);
+            if (volcap.length === 9)  capToWP = volcap.toString().slice(0,3);
             return capToWP;
           }
 
