@@ -79,7 +79,7 @@ module.exports = {
             let volToWP;
             rp(requestCMC).then((responseCMC) => {
               let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
-              dashRanking = '#'+responseCMC['data']['131']['cmc_rank'];
+              dashRanking = responseCMC['data']['131']['cmc_rank'];
               dashMarketCap = Math.ceil(responseCMC['data']['131']['quote']['USD']['market_cap']);
               dashVolume = Math.ceil(responseCMC['data']['131']['quote']['USD']['volume_24h']);
               console.log('From CoinMarketCap',usdRateCMC);
@@ -101,7 +101,7 @@ module.exports = {
               return rp(requestCoinCap).then((responseCoinCap)=>{
               var usdRateCoinCap = Number(responseCoinCap['data']['priceUsd']).toFixed(3);
               console.log('From CoinCap',usdRateCoinCap);
-              dashRanking = '#'+responseCoinCap['data']['rank'];
+              dashRanking = responseCoinCap['data']['rank'];
               dashMarketCap = Math.ceil(responseCoinCap['data']['marketCapUsd']);
               dashVolume = Math.ceil(responseCoinCap['data']['volumeUsd24Hr']);
               capToWP = VolCapRound(dashMarketCap.toString());
@@ -121,7 +121,7 @@ module.exports = {
               return rp(requestCoinGecko).then((responseCoinGecko)=>{
               var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
               console.log('From Coin Gecko',usdRateCoinGecko);
-              dashRanking = '#'+'14';
+              dashRanking = '14';
               dashMarketCap = Math.ceil(responseCoinGecko['dash']['usd_market_cap']);
               dashVolume = Math.ceil(responseCoinGecko['dash']['usd_24h_vol']);
               capToWP = VolCapRound(dashMarketCap.toString());
