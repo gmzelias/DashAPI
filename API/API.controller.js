@@ -7,11 +7,12 @@ const rp = require('request-promise');
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIpOrOrigin = ['::1','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io','http://www.dashhelpme.io','http://dashhelpme.io'];
-        console.log(req.headers);
+        var trustedIpOrOrigin = ['::1','localhost:3000','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io','http://www.dashhelpme.io','http://dashhelpme.io'];
+       // console.log(req.headers);
         var requestIP = req.headers['x-forwarded-for'];
         var requestOrigin = req.headers['origin']; 
-       if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0 ) {  //No request allow from unknown IPs
+        var requestHost = req.headers['host']; 
+       if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0  || trustedIpOrOrigin.indexOf(requestHost) >= 0) {  //No request allow from unknown IPs
             console.log('Allowed');     
             const requestCMC = {
               method: 'GET',
@@ -35,7 +36,7 @@ module.exports = {
 
             const requestCoinGecko = {
               method: 'GET',
-              uri: 'https://api.coingecko.com/api/v3/simple/price?ids=dash&vs_currencies=usd',
+              uri: 'https://api.coingecko.com/api/v3/simple/price?ids=dash&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true',
               json: true,
               gzip: true
             };
@@ -71,25 +72,46 @@ module.exports = {
             let arrayVesPrices = [];
             const arrAvg = arrayVesPrices => arrayVesPrices.reduce((a,b) => a + b, 0) / arrayVesPrices.length;
             let vesDashRate;
-
+            let dashRanking;
+            let dashMarketCap;
+            let dashVolume;
+            let capToWP; 
+            let volToWP;
             rp(requestCMC).then((responseCMC) => {
               let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
+              dashRanking = '#'+responseCMC['data']['131']['cmc_rank'];
+              dashMarketCap = Math.ceil(responseCMC['data']['131']['quote']['USD']['market_cap']);
+              dashVolume = Math.ceil(responseCMC['data']['131']['quote']['USD']['volume_24h']);
               console.log('From CoinMarketCap',usdRateCMC);
+              capToWP = VolCapRound(dashMarketCap.toString());
+              volToWP = VolCapRound(dashVolume.toString());
+            console.log(dashRanking);
+              console.log(capToWP, 'cap');
+              console.log(volToWP, 'vol');
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCMC).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
               return utils.errorHandler(res, 500)({error});
               });
 
               }).catch((err) => { // Error on CoinMarketCap
+              console.log(err);
               console.log('API call error in CoinMarketCap');
               return rp(requestCoinCap).then((responseCoinCap)=>{
               var usdRateCoinCap = Number(responseCoinCap['data']['priceUsd']).toFixed(3);
               console.log('From CoinCap',usdRateCoinCap);
+              dashRanking = '#'+responseCoinCap['data']['rank'];
+              dashMarketCap = Math.ceil(responseCoinCap['data']['marketCapUsd']);
+              dashVolume = Math.ceil(responseCoinCap['data']['volumeUsd24Hr']);
+              capToWP = VolCapRound(dashMarketCap.toString());
+              volToWP = VolCapRound(dashVolume.toString());
+            /*  console.log(dashRanking);
+              console.log(capToWP);
+              console.log(volToWP);*/
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinCap).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinCap).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               }); 
@@ -99,18 +121,40 @@ module.exports = {
               return rp(requestCoinGecko).then((responseCoinGecko)=>{
               var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
               console.log('From Coin Gecko',usdRateCoinGecko);
+              dashRanking = '#'+'14';
+              dashMarketCap = Math.ceil(responseCoinGecko['dash']['usd_market_cap']);
+              dashVolume = Math.ceil(responseCoinGecko['dash']['usd_24h_vol']);
+              capToWP = VolCapRound(dashMarketCap.toString());
+              volToWP = VolCapRound(dashVolume.toString());
+             /* console.log(dashRanking);
+              console.log(capToWP);
+              console.log(volToWP);*/
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinGecko).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCoinGecko).toFixed(2)});
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               });
             }).catch((err) => { // Error on CoinGecko (All 3 returned error)
+            //  console.log(err);
               console.log('API call error in CoinGecko');
               return utils.errorHandler(res, 500)({status: "No USD rate found"});
             })
           });            
         });
+
+        /*
+jQuery('.elementor-icon-box-title:eq(3)').text('#14')
+jQuery('.elementor-icon-box-title:eq(4)').text('#14')
+jQuery('.elementor-icon-box-title:eq(5)').text('#14')
+        */
+          /* Round Volume or Capitalization to WP format*/
+          const VolCapRound = (volcap) => {
+            let capToWP
+            if (volcap.length === 10) capToWP = '+$'+volcap.toString().slice(0,1)+'.'+volcap.toString().slice(1,2) + 'B';
+            if (volcap.length === 9)  capToWP = '+$'+volcap.toString().slice(0,3)+ 'M';
+            return capToWP;
+          }
 
           const dolarTodayPromise = (array) => {
             return new Promise ((resolve, reject) => {
