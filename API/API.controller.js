@@ -268,20 +268,20 @@ currentRate: (req, res) => {
   });
   }  if (req.query.currency === 'USD'){ /* End Bs IF */ 
         rp(requestCMC).then((responseCMC) => {
-          let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
+          let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(2);
           console.log('From CoinMarketCap',usdRateCMC);
           return utils.respondWithResults(res, 200)({usdDashRate:usdRateCMC});
           }).catch((err) => { // Error on CoinMarketCap
           console.log(err);
           console.log('API call error in CoinMarketCap');
           return rp(requestCoinCap).then((responseCoinCap)=>{
-          var usdRateCoinCap = Number(responseCoinCap['data']['priceUsd']).toFixed(3);
+          var usdRateCoinCap = Number(responseCoinCap['data']['priceUsd']).toFixed(2);
           console.log('From CoinCap',usdRateCoinCap); 
           return utils.respondWithResults(res, 200)({usdDashRate:usdRateCoinCap});
         }).catch((err) => { // Error on CoinCap
           console.log('API call error in CoinCap', err);
           return rp(requestCoinGecko).then((responseCoinGecko)=>{
-          var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
+          var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(2);
           console.log('From CoinGecko',usdRateCoinCap); 
           return utils.respondWithResults(res, 200)({usdDashRate:usdRateCoinGecko});
         }).catch((err) => { // Error on CoinGecko (All 3 returned error)
