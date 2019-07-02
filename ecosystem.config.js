@@ -17,7 +17,7 @@ module.exports = {
     }
   }],
 
- /* deploy : {
+  deploy : {
     production : {
       user : 'ubuntu',
       host : 'ec2-18-237-86-164.us-west-2.compute.amazonaws.com',
@@ -27,9 +27,9 @@ module.exports = {
       path : '/home/ubuntu/Code/DashAPI',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
-  }*/
+  }
 
-  deploy : {
+ /* deploy : {
     production : {
       user : 'bitnami',
       host : 'ec2-34-216-219-84.us-west-2.compute.amazonaws.com',
@@ -39,5 +39,5 @@ module.exports = {
       path : '/home/bitnami/DashAPI',
       'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production'
     }
-  }
+  }*/
 };
