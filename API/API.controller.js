@@ -90,7 +90,8 @@ module.exports = {
               console.log(volToWP, 'vol');
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCMC).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
+              // 1.03 to increase 3% of the total value in BsS
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
               return utils.errorHandler(res, 500)({error});
               });
@@ -108,7 +109,8 @@ module.exports = {
               volToWP = VolCapRound(dashVolume.toString());
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinCap).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
+              // 1.03 to increase 3% of the total value in BsS
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               }); 
@@ -125,7 +127,8 @@ module.exports = {
               volToWP = VolCapRound(dashVolume.toString());
               vesAvgPromise(arrayVesPrices).then((response)=>{
               vesDashRate = (response * usdRateCoinGecko).toFixed(2);
-              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
+              // 1.03 to increase 3% of the total value in BsS
+              return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03, usdDashRate:Number(usdRateCMC).toFixed(2),ranking:dashRanking,cap:capToWP,volume:volToWP});
               }).catch((error)=>{
                 return utils.errorHandler(res, 500)({error});
               });
@@ -233,7 +236,8 @@ currentRate: (req, res) => {
         console.log('From CoinMarketCap',usdRateCMC);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCMC).toFixed(2);
-        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
+        // 1.03 to increase 3% of the total value in BsS
+        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03});
         }).catch((error)=>{
         return utils.errorHandler(res, 500)({error});
         });
@@ -245,7 +249,8 @@ currentRate: (req, res) => {
         console.log('From CoinCap',usdRateCoinCap);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCoinCap).toFixed(2);
-        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
+        // 1.03 to increase 3% of the total value in BsS
+        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03});
         }).catch((error)=>{
           return utils.errorHandler(res, 500)({error});
         }); 
@@ -255,7 +260,8 @@ currentRate: (req, res) => {
         var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCoinGecko).toFixed(2);
-        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
+        // 1.03 to increase 3% of the total value in BsS
+        return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate*1.03});
         }).catch((error)=>{
           return utils.errorHandler(res, 500)({error});
         });
