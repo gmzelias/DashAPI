@@ -178,20 +178,20 @@ totalVolume: (req, res) => {
         dashVolume = Math.ceil(responseCMC['data']['131']['quote']['USD']['volume_24h']);
         volToWP = VolCapRound(dashVolume.toString());
         console.log(volToWP, 'vol');
-        return utils.respondWithResults(res, 200)({dashVol:Number(volToWP).toFixed(2)});
+        return utils.respondWithResults(res, 200)({dashVol:volToWP});
         }).catch((err) => { // Error on CoinMarketCap
         console.log(err);
         console.log('API call error in CoinMarketCap');
         return rp(requestCoinCap).then((responseCoinCap)=>{
         dashVolume = Math.ceil(responseCoinCap['data']['volumeUsd24Hr']);
         volToWP = VolCapRound(dashVolume.toString());
-        return utils.respondWithResults(res, 200)({dashVol:Number(volToWP).toFixed(2)});
+        return utils.respondWithResults(res, 200)({dashVol:volToWP});
       }).catch((err) => { // Error on CoinCap
         console.log('API call error in CoinCap', err);
         return rp(requestCoinGecko).then((responseCoinGecko)=>{
         dashVolume = Math.ceil(responseCoinGecko['dash']['usd_24h_vol']);
         volToWP = VolCapRound(dashVolume.toString());
-        return utils.respondWithResults(res, 200)({dashVol:Number(volToWP).toFixed(2)});
+        return utils.respondWithResults(res, 200)({dashVol:volToWP});
       }).catch((err) => { // Error on CoinGecko (All 3 returned error)
       //  console.log(err);
         console.log('API call error in CoinGecko');
@@ -233,6 +233,10 @@ currentRate: (req, res) => {
         console.log('From CoinMarketCap',usdRateCMC);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCMC * 1.03).toFixed(2);
+        //VEN decimals
+        vesDashRate = vesDashRate.replace(".", ",");
+        vesDashRate = vesDashRate.slice(0,1) + "." + vesDashRate.slice(1,4)  + "." + vesDashRate.slice(4);
+        //
         return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
         }).catch((error)=>{
         return utils.errorHandler(res, 500)({error});
@@ -245,6 +249,10 @@ currentRate: (req, res) => {
         console.log('From CoinCap',usdRateCoinCap);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCoinCap * 1.03).toFixed(2);
+        //VEN decimals
+        vesDashRate = vesDashRate.replace(".", ",");
+        vesDashRate = vesDashRate.slice(0,1) + "." + vesDashRate.slice(1,4)  + "." + vesDashRate.slice(4);
+        //
         return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
         }).catch((error)=>{
           return utils.errorHandler(res, 500)({error});
@@ -255,6 +263,10 @@ currentRate: (req, res) => {
         var usdRateCoinGecko = Number(responseCoinGecko['dash']['usd']).toFixed(3);
         vesAvgPromise(arrayVesPrices).then((response)=>{
         vesDashRate = (response * usdRateCoinGecko * 1.03).toFixed(2);
+        //VEN decimals
+        vesDashRate = vesDashRate.replace(".", ",");
+        vesDashRate = vesDashRate.slice(0,1) + "." + vesDashRate.slice(1,4)  + "." + vesDashRate.slice(4);
+        //
         return utils.respondWithResults(res, 200)({vesDashRate:vesDashRate});
         }).catch((error)=>{
           return utils.errorHandler(res, 500)({error});
