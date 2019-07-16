@@ -75,7 +75,7 @@ module.exports = {
         var requestIP = req.headers['x-forwarded-for'];
         var requestOrigin = req.headers['origin']; 
         var requestHost = req.headers['host']; 
-        console.log(requestIP);
+        console.log(req);
        if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0  || trustedIpOrOrigin.indexOf(requestHost) >= 0) {  //No request allow from unknown IPs
             console.log('Allowed');     
             rp(requestCMC).then((responseCMC) => {
