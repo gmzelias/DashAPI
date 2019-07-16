@@ -64,7 +64,7 @@ const arrAvg = arrayVesPrices => arrayVesPrices.reduce((a,b) => a + b, 0) / arra
 module.exports = {
     //DASH ID FOR CMC 131
     dashUsdBss: (req, res) => {
-        var trustedIpOrOrigin = ['::1','localhost:3000','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io','http://www.dashhelpme.io','http://dashhelpme.io'];
+        var trustedIpOrOrigin = ['::1','localhost:3000','200.109.60.255','https://www.dashhelpme.io','https://dashhelpme.io','http://www.dashhelpme.io','http://dashhelpme.io','http://ec2-18-237-86-164.us-west-2.compute.amazonaws.com:3008','http://www.ec2-18-237-86-164.us-west-2.compute.amazonaws.com:3008'];
         let arrayVesPrices = [];
         let vesDashRate;
         let dashRanking;
@@ -75,7 +75,6 @@ module.exports = {
         var requestIP = req.headers['x-forwarded-for'];
         var requestOrigin = req.headers['origin']; 
         var requestHost = req.headers['host']; 
-        console.log(req);
        if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0  || trustedIpOrOrigin.indexOf(requestHost) >= 0) {  //No request allow from unknown IPs
             console.log('Allowed');     
             rp(requestCMC).then((responseCMC) => {
