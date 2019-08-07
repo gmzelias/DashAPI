@@ -360,8 +360,12 @@ if (req.query.currency !== 'USD' && req.query.currency !== 'Bs' ) return utils.e
                   let vesBitVzla = parseFloat(responseBitVzla['exchange_rates']['VEF_USD']);
                   if (Math.ceil(Math.log10(vesBitVzla + 1)) >= 9 ) vesBitVzla = parseFloat((vesBitVzla / 100000).toFixed(3)); // Validation if still in VEF
                   else vesBitVzla = parseFloat(vesBitVzla.toFixed(3));
-                  array.push(vesBitVzla);
-                  resolve(array);
+                  console.log(vesBitVzla, 'vestBitVzla');
+                  if (vesBitVzla<10000) reject('Error on Bit Vzla (les than 10000)');
+                  else{
+                    array.push(vesBitVzla);
+                    resolve(array);
+                  }  
                   }).catch(()=>{
                   reject('Error on Bit Vzla');  
                   });

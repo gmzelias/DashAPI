@@ -11,8 +11,11 @@ router.get("/dashVol", controller.totalVolume);
 router.get("/dashRanking", controller.currentRanking);
 router.get("/dashRate", controller.currentRate);
 
-//DashText
-router.get("/logUser", controllerDashText.login);
+//DashWebApp
+router.post("/logUser", controllerDashText.login);
+router.post("/signInUser", controllerDashText.signIn);
+router.post("/validateToken", controllerDashText.validateToken);
+router.post("/tableData", controllerDashText.tableData);
 
 module.exports = router;
 

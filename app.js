@@ -1,6 +1,6 @@
 //require('./config/config');
 const express = require('express');
-
+var bodyParser = require('body-parser')
 let app = express();
 
 app.use(function (req, res, next) {
@@ -11,9 +11,10 @@ app.use(function (req, res, next) {
     console.log(req.method + ' ' + req.originalUrl);
     next();
 });
-
+app.use(bodyParser.json())
 // Import routes
 require('./routes')(app);
+
 
 const port = process.env.PORT || 3000;
 
