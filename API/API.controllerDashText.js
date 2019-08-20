@@ -24,7 +24,7 @@ module.exports = {
       let reqPassword =data.Password;
       findUserByEmail(reqEmail).then(data=>{
         bcrypt.compare(reqPassword, data.Password, (errbcrypt, bcryptres) => {
-          if(bcryptres===true)return utils.respondWithResults(res, 200)({user:data.user,token:data.token})
+          if(bcryptres===true)return utils.respondWithResults(res, 200)({user:data.user,token:data.token, currency:data.currency})
           else return utils.errorHandler(res, 500)('Email/Password mismatched');
         });
       }).catch((error)=>{
@@ -40,7 +40,7 @@ module.exports = {
       let reqPassword =data.Password;
       let reqDashAddress =data.DashAddress;
       let reqCountry =data.Country;
-      let reqCurrency =data.Country;
+      let reqCurrency =data.Currency;
       createNewUser(reqName,reqLastName,reqEmail,reqPassword,reqDashAddress,reqCountry,reqCurrency).then(data=>{
         return utils.respondWithResults(res, 200)(data)
       }).catch((error)=>{
@@ -64,28 +64,47 @@ module.exports = {
     tableData: (req, res) => {
       let data = req.body;
       let reqToken =data.token;
-      let reqemail =data.email;
-      console.log(reqToken,reqemail);
-      /*
+      let reqemail =data.user;
+      //console.log(reqToken,reqemail);
       jwt.verify(reqToken, 'thisismysecretcaicuid', function(err, decoded) {
         if (err) {
           return utils.errorHandler(res, 500)(false);
         }
-        else{
-          return utils.respondWithResults(res, 200)(true);
-        }
-      });*/
-    }
-       //const jwtToken = jwt.sign({},'thisisaDashrandomsentencefortheAPI')
+        else{ //CHECK DATA ON QUERY
+          var SQL = 'SELECT Contrato, MontoDash, MontoFiat,TipoFiat,Status,DateCompleted,Hash FROM txinfo,User WHERE User.email = ? AND txinfo.FK_UserId = User.id';
+          pool.query(SQL, [reqemail], function(err, rows, fields) {
+            if (err){
+              console.log(err);
+              return utils.respondWithResults(res, 500)({message:'No Data'});
+              //reject({ code:err.errno.toString(),message:err.sqlMessage});
+            }
+            if (rows.length != 0)
+            {
+              console.log('datafound')
+              return utils.respondWithResults(res, 200)(rows);
+            }
+            else{
+              return utils.respondWithResults(res, 500)({message:'No Data'});
+            }
+          });
 
-        //////////////////////////////////////////////////////////////// Try/catch example - Start
-     /* try{
-        const user = findUserByEmail(reqEmail);
-        return utils.respondWithResults(res, 200)(user)
-      }catch(e){
-        return utils.errorHandler(res, 500)(e);
-      }*/
-        //////////////////////////////////////////////////////////////// Try/catch example - End
+        }
+      });
+    },
+
+    newDashTx: (req, res) => {
+      let data = req.body;
+      console.log(data);
+      let reqEstablecimiento =data.establecimiento;
+      let reqMonto =data.monto;
+      let reqContrato =data.contrato;
+      let reqCurrency =data.currency;
+      callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
+        return utils.respondWithResults(res, 200)(data)
+      }).catch((error)=>{
+        return utils.errorHandler(res, 500)(error);
+      })
+    }
     
 }
 
@@ -102,6 +121,7 @@ const findUserByEmail = (userEmail) => {
         const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '5 minutes'});
         resolve({user:rows[0].email,
                 token:token,
+                currency:rows[0].Currency,
                 Password:rows[0].Password});
       }
       else{
@@ -109,6 +129,8 @@ const findUserByEmail = (userEmail) => {
       }
     });
   })
+
+  
 
   //////////////////////////////////////////////////////////////// Try/catch example - Start
  /* pool.query(SQL, [userEmail], function(err, rows, fields) {
@@ -126,6 +148,8 @@ const findUserByEmail = (userEmail) => {
   //////////////////////////////////////////////////////////////// Try/catch example - End
 };
 
+
+
 const createNewUser = (userName,userLastName,userEmail,userPassword,userDashAddress,Country,Currency) => {
   return new Promise ((resolve,reject) => {
     bcrypt.hash(userPassword, 8, (errbcrypt, hash) => {
@@ -136,11 +160,41 @@ const createNewUser = (userName,userLastName,userEmail,userPassword,userDashAddr
               reject({ code:err.errno.toString(),message:err.sqlMessage});
             }
             else{
-              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '5 minutes'})
+              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '10 minutes'})
               resolve({user:userEmail,
+                      currency:Currency,
                       token:token});
             }
           });
       });
    });
 }
+
+
+const callToPP = (establecimiento, monto, contrato, currency) => {
+  return new Promise ((resolve,reject) => {
+    request.get({
+      url: 'http://pp.dashhelpme.io/',
+      qs: { 
+        idestablecimiento:establecimiento,
+        monto:monto,
+        contrato:contrato,
+        currency:currency
+      },
+      method: 'GET'
+     },
+      function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            //console.log(body);
+            resolve({result:"Success"});
+          }
+          else{
+            //console.log(body);
+            reject({result:"Fail"});
+          }
+      });
+   });
+}
+
+
+

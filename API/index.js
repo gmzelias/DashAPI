@@ -16,6 +16,7 @@ router.post("/logUser", controllerDashText.login);
 router.post("/signInUser", controllerDashText.signIn);
 router.post("/validateToken", controllerDashText.validateToken);
 router.post("/tableData", controllerDashText.tableData);
+router.post("/newDashTx", controllerDashText.newDashTx);
 
 module.exports = router;
 
