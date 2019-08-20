@@ -1,7 +1,6 @@
 "use strict";
 var request = require('request');
 let utils = require("../utils/webUtils");
-const rp = require('request-promise');
 const jwt = require ('jsonwebtoken');
 var mysql = require('mysql');
 var bcrypt = require ('bcryptjs');
@@ -94,12 +93,23 @@ module.exports = {
 
     newDashTx: (req, res) => {
       let data = req.body;
-      console.log(data);
       let reqEstablecimiento =data.establecimiento;
       let reqMonto =data.monto;
       let reqContrato =data.contrato;
       let reqCurrency =data.currency;
       callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
+        return utils.respondWithResults(res, 200)(data)
+      }).catch((error)=>{
+        return utils.errorHandler(res, 500)(error);
+      })
+    },
+
+    checkTxStatus: (req, res) => {
+      let data = req.body;
+      console.log(data);
+      let reqEstablecimiento =data.establecimiento;
+      let reqContrato =data.contrato;
+      PPCheckTxStatus(reqEstablecimiento,reqContrato).then(data=>{ // PP = Payment Processor
         return utils.respondWithResults(res, 200)(data)
       }).catch((error)=>{
         return utils.errorHandler(res, 500)(error);
@@ -191,6 +201,29 @@ const callToPP = (establecimiento, monto, contrato, currency) => {
           else{
             //console.log(body);
             reject({result:"Fail"});
+          }
+      });
+   });
+}
+
+const PPCheckTxStatus = (establecimiento, contrato) => {
+  return new Promise ((resolve,reject) => {
+    request.get({
+      url: 'http://pp.dashhelpme.io/checkTxStatus',
+      qs: { 
+        idestablecimiento:establecimiento,
+        contrato:contrato,
+      },
+      method: 'GET'
+     },
+      function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            console.log(body);
+            resolve({result:body});
+          }
+          else{
+            console.log(body);
+            reject({result:body});
           }
       });
    });
