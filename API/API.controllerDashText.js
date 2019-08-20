@@ -84,7 +84,7 @@ module.exports = {
               return utils.respondWithResults(res, 200)(rows);
             }
             else{
-              return utils.respondWithResults(res, 500)({message:'No Data'});
+              return utils.respondWithResults(res, 200)(rows);
             }
           });
 

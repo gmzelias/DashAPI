@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 require('./routes')(app);
 
 
-const port = 3000;
+const port = /* process.env.PORT ||*/ 3000;  //Comment.env.PORT is neccesary to deploy on Heroku
 
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);
