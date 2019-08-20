@@ -21,3 +21,8 @@ const port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log(`App listening on port ${port}!`);
 })
+
+/*    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method,, Authorization");
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
+    res.header("Allow: GET, POST, OPTIONS, PUT, DELETE");*/
