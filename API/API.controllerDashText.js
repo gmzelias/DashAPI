@@ -198,6 +198,10 @@ const callToPP = (establecimiento, monto, contrato, currency) => {
             //console.log(body);
             resolve({result:"Success"});
           }
+          if (!error && response.statusCode == 202) {
+            //console.log(body);
+            resolve({result:"202"});
+          }
           else{
             //console.log(body);
             reject({result:"Fail"});
