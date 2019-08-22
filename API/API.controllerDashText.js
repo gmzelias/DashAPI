@@ -170,7 +170,7 @@ const createNewUser = (userName,userLastName,userEmail,userPassword,userDashAddr
               reject({ code:err.errno.toString(),message:err.sqlMessage});
             }
             else{
-              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '10 minutes'})
+              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '2 minutes'})
               resolve({user:userEmail,
                       currency:Currency,
                       token:token});
