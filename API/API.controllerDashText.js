@@ -99,7 +99,7 @@ module.exports = {
       let reqCurrency =data.currency;
       jwt.verify(reqToken, 'thisismysecretcaicuid', function(err, decoded) {
         if (err) {
-          return utils.errorHandler(res, 500)({result:"401"});
+          return utils.errorHandler(res, 200)({result:"401"});
         }else{
           callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
             return utils.respondWithResults(res, 200)(data)
@@ -134,7 +134,7 @@ const findUserByEmail = (userEmail) => {
       }
       if (rows.length != 0)
       {
-        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '2 minutes'});
+        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '1 minute'});
         resolve({user:rows[0].email,
                 token:token,
                 currency:rows[0].Currency,
@@ -176,7 +176,7 @@ const createNewUser = (userName,userLastName,userEmail,userPassword,userDashAddr
               reject({ code:err.errno.toString(),message:err.sqlMessage});
             }
             else{
-              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '2 minutes'})
+              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '1 minute'})
               resolve({user:userEmail,
                       currency:Currency,
                       token:token});
