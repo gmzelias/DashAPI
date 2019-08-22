@@ -97,11 +97,18 @@ module.exports = {
       let reqMonto =data.monto;
       let reqContrato =data.contrato;
       let reqCurrency =data.currency;
-      callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
-        return utils.respondWithResults(res, 200)(data)
-      }).catch((error)=>{
-        return utils.errorHandler(res, 500)(error);
-      })
+      jwt.verify(reqToken, 'thisismysecretcaicuid', function(err, decoded) {
+        if (err) {
+          return utils.errorHandler(res, 500)({result:"401"});
+        }
+        else{
+          callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
+            return utils.respondWithResults(res, 200)(data)
+          }).catch((error)=>{
+            return utils.errorHandler(res, 500)(error);
+          })
+        }
+      });
     },
 
     checkTxStatus: (req, res) => {
