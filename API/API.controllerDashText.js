@@ -97,6 +97,7 @@ module.exports = {
       let reqMonto =data.monto;
       let reqContrato =data.contrato;
       let reqCurrency =data.currency;
+      let reqToken =data.token;
       jwt.verify(reqToken, 'thisismysecretcaicuid', function(err, decoded) {
         if (err) {
           return utils.errorHandler(res, 500)({result:"401"});
@@ -107,6 +108,7 @@ module.exports = {
           }).catch((error)=>{
             return utils.errorHandler(res, 500)(error);
           })
+
         }
       });
     },
