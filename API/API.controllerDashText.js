@@ -137,7 +137,7 @@ const findUserByEmail = (userEmail) => {
       }
       if (rows.length != 0)
       {
-        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '1 minute'});
+        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '20 minutes'});
         resolve({user:rows[0].email,
                 token:token,
                 currency:rows[0].Currency,
@@ -179,7 +179,7 @@ const createNewUser = (userName,userLastName,userEmail,userPassword,userDashAddr
               reject({ code:err.errno.toString(),message:err.sqlMessage});
             }
             else{
-              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '1 minute'})
+              const token = jwt.sign({_id:userEmail},'thisismysecretcaicuid',{expiresIn: '20 minutes'})
               resolve({user:userEmail,
                       currency:Currency,
                       token:token});
