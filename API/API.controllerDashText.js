@@ -128,7 +128,7 @@ const findUserByEmail = (userEmail) => {
       }
       if (rows.length != 0)
       {
-        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '5 minutes'});
+        const token = jwt.sign({_id:rows[0].Email},'thisismysecretcaicuid',{expiresIn: '2 minutes'});
         resolve({user:rows[0].email,
                 token:token,
                 currency:rows[0].Currency,
