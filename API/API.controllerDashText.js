@@ -113,6 +113,19 @@ module.exports = {
       });
     },
 
+    generateDashTx: (req, res) => {
+      let data = req.body;
+      let reqEstablecimiento =data.establecimiento;
+      let reqMonto =data.monto;
+      let reqContrato =data.contrato;
+      let reqCurrency =data.currency;
+        callToPP(reqEstablecimiento,reqMonto,reqContrato,reqCurrency).then(data=>{ // PP = Payment Processor
+          return utils.respondWithResults(res, 200)(data)
+        }).catch((error)=>{
+          return utils.errorHandler(res, 500)(error);
+        })
+    },
+
     checkTxStatus: (req, res) => {
       let data = req.body;
       console.log(data);
