@@ -128,6 +128,7 @@ module.exports = {
 
     checkTxStatus: (req, res) => {
       let data = req.body;
+      req.setTimeout(350000);
       console.log(data);
       let reqEstablecimiento =data.establecimiento;
       let reqContrato =data.contrato;
