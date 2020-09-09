@@ -75,7 +75,7 @@ module.exports = {
         var requestIP = req.headers['x-forwarded-for'];
         var requestOrigin = req.headers['origin']; 
         var requestHost = req.headers['host']; 
-      // if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0  || trustedIpOrOrigin.indexOf(requestHost) >= 0) {  //No request allow from unknown IPs
+       if(trustedIpOrOrigin.indexOf(requestIP) >= 0 || trustedIpOrOrigin.indexOf(requestOrigin) >= 0  || trustedIpOrOrigin.indexOf(requestHost) >= 0) {  //No request allow from unknown IPs
             console.log('Allowed');     
             rp(requestCMC).then((responseCMC) => {
               let usdRateCMC = responseCMC['data']['131']['quote']['USD']['price'].toFixed(3);
@@ -136,10 +136,10 @@ module.exports = {
             })
           });            
         });
-    /*  }else {
+      }else {
         console.log('Not Allowed');
         return utils.errorHandler(res, 500)({status: "IP out of range"});
-      }*/
+      }
 },
 totalCap: (req, res) => {
   let dashMarketCap;
